@@ -6,6 +6,54 @@ from mpl_toolkits.mplot3d import Axes3D
 import scipy
 from matplotlib import cm
 
+savePrefixes = [
+"current",
+"snowmassUnc1_300",
+"snowmassUnc1_3000",
+"snowmassUnc2_300",
+"snowmassUnc2_3000"
+]
+
+annotation1List = [
+"$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",
+"$\sqrt{s}=14$ TeV, $\mathcal{L} = 300$ fb$^{-1}$",
+"$\sqrt{s}=14$ TeV, $\mathcal{L} = 3000$ fb$^{-1}$",
+"$\sqrt{s}=14$ TeV, $\mathcal{L} = 300$ fb$^{-1}$",
+"$\sqrt{s}=14$ TeV, $\mathcal{L} = 3000$ fb$^{-1}$",
+]
+
+annotation2List = [
+"$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",
+"Uncertainty Scenario 1",
+"Uncertainty Scenario 1",
+"Uncertainty Scenario 2",
+"Uncertainty Scenario 2",
+]
+
+oneDFileList = [
+"MultiDimFitGrid1000Fastneg20to20.root",
+None,
+None,
+None,
+None,
+]
+
+twoDFileList = [
+"MultiDimFitGrid1000Fastneg20to20GGvQQ.root",
+"conservative/MultiDimFitGrid1000Fastneg20to20GGvQQ_300.root",
+"conservative/MultiDimFitGrid1000Fastneg20to20GGvQQ_3000.root",
+"optimistic/MultiDimFitGrid1000Fastneg20to20GGvQQ_300.root",
+"optimistic/MultiDimFitGrid1000Fastneg20to20GGvQQ_3000.root",
+]
+
+profileFileList = [
+"MultiDimFitSinglesGGvQQ.root",
+"conservative/MultiDimFitSinglesGGvQQ_300.root",
+"conservative/MultiDimFitSinglesGGvQQ_3000.root",
+"optimistic/MultiDimFitSinglesGGvQQ_300.root",
+"optimistic/MultiDimFitSinglesGGvQQ_3000.root",
+]
+
 def drawAnnotations(fig,title,annotation1=None,annotation2=None,annotation3=None,
                     annotation1r=None,annotation2r=None,annotation3r=None,
                     annotation1c=None,annotation2c=None,annotation3c=None,
@@ -36,122 +84,143 @@ def saveAs(fig,name):
   fig.savefig(name+".eps",format="eps")
   fig.savefig(name+".svg",format="svg")
 
-oneDFile = root.TFile("MultiDimFitGrid1000Fastneg20to20.root")
-twoDFile = root.TFile("MultiDimFitGrid1000Fastneg20to20GGvQQ.root")
-profileFile = root.TFile("MultiDimFitSinglesGGvQQ.root")
+for savePrefix,oneDFN,twoDFN,profileFN,annotation1,annotation2 in zip(savePrefixes,oneDFileList,twoDFileList,profileFileList,annotation1List,annotation2List):
 
-oneDTree = oneDFile.Get("limit")
-twoDTree = twoDFile.Get("limit")
-profileTree = profileFile.Get("limit")
+  minX = -15
+  minY = -15
+  maxX = 15
+  maxY = 15
+  if "300" in savePrefix:
+    minX = -1
+    minY = -1
+    maxX = 3
+    maxY = 3
+  if "3000" in savePrefix:
+    minX = 0
+    minY = 0
+    maxX = 2
+    maxY = 2
 
-oneDData = scipy.zeros((oneDTree.GetEntries(),2))
-arrayLen = int(scipy.sqrt(twoDTree.GetEntries()-2))
-print("Array Side Length: {0:.1f}".format(arrayLen))
-twoDData = scipy.zeros((arrayLen,arrayLen,3))
+  fig = mpl.figure()
 
-for iEntry in range(0,oneDTree.GetEntries()):
-  oneDTree.GetEntry(iEntry)
-  if 2*oneDTree.deltaNLL > 10:
-    continue
-  oneDData[iEntry,0] = float(oneDTree.r)
-  oneDData[iEntry,1] = 2*float(oneDTree.deltaNLL)
+  profileFile = root.TFile(profileFN)
+  profileTree = profileFile.Get("limit")
 
-bestFitXY = [0.,0.]
-twoDTree.GetEntry(0)
-bestFitXY[0] = float(twoDTree.r_ggH)
-bestFitXY[1] = float(twoDTree.r_qqH)
-for iX in range(0,arrayLen):
-  for iY in range(0,arrayLen):
-    iEntry = iX + arrayLen*iY + 1
-    twoDTree.GetEntry(iEntry)
+  if oneDFN:
+    oneDFile = root.TFile(oneDFN)
+    oneDTree = oneDFile.Get("limit")
+    oneDData = scipy.zeros((oneDTree.GetEntries(),2))
+    for iEntry in range(0,oneDTree.GetEntries()):
+      oneDTree.GetEntry(iEntry)
+      if 2*oneDTree.deltaNLL > 10:
+        continue
+      oneDData[iEntry,0] = float(oneDTree.r)
+      oneDData[iEntry,1] = 2*float(oneDTree.deltaNLL)
+    oneDData = scipy.ma.masked_equal(oneDData,0.)
+
+    fig.clear()
+    ax = fig.add_subplot(111)
+    ax.plot(oneDData[:,0],oneDData[:,1],'b-')
+    ax.set_xlabel("$\mu$")
+    ax.set_ylabel("$-2\ln\Delta\mathcal{L}$")
+    drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1c=annotation1,annotation2c=annotation2)
+    saveAs(fig,savePrefix+"_1d")
   
-    m2Nll = float(2*twoDTree.deltaNLL)
-    twoDData[iX,iY,0] = float(twoDTree.r_ggH)+1e-6
-    twoDData[iX,iY,1] = float(twoDTree.r_qqH)+1e-6
-    if m2Nll > 10.:
-      m2Nll = 0.
-    twoDData[iX,iY,2] = m2Nll
-
-#twoDData = twoDData[30:twoDData.shape[0]-30,30:twoDData.shape[1]-30,:]
-#print twoDData.shape
-#print "x:"
-#print twoDData[:,:,0]
-#print "y:"
-#print twoDData[:,:,1]
-#print "Z:"
-#print twoDData[:,:,2]
-
-#X,Y,Z = convertData(twoDData)
-
-oneDData = scipy.ma.masked_equal(oneDData,0.)
-twoDData = scipy.ma.masked_equal(twoDData,0.)
-#for i in range(0,twoDData.shape[0],10):
-#  print twoDData[i,:]
-#for i in range(0,twoDData.shape[0],100):
-#  print twoDData[i,:]
-
-profileXraw = scipy.amin(twoDData[:,:,2],axis=1)
-profileYraw = scipy.amin(twoDData[:,:,2],axis=0)
-profileXx = []
-profileX = []
-profileY = []
-profileYy = []
-for x,lnn in zip(twoDData[:,0,1],profileXraw):
-  if lnn:
-    profileX.append(lnn)
-    profileXx.append(x)
-for y,lnn in zip(twoDData[0,:,0],profileYraw):
-  if lnn:
-    profileY.append(lnn)
-    profileYy.append(y)
-
-fig = mpl.figure()
-ax = fig.add_subplot(111)
-ax.plot(oneDData[:,0],oneDData[:,1],'b-')
-ax.set_xlabel("$\mu$")
-ax.set_ylabel("$-2\ln\Delta\mathcal{L}$")
-drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1c="$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",annotation2c="$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$")
-saveAs(fig,"1d")
-
-fig.clear()
-ax = fig.add_subplot(111)
-ax.contourf(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
-ax.set_xlabel("$\mu(ggH)$")
-ax.set_ylabel("$\mu(qqH)$")
-drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$","$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$")
-saveAs(fig,"2d_contourColor")
-
-fig.clear()
-ax = fig.add_subplot(111)
-ct = ax.contour(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
-ax.clabel(ct,inline=1,rightside_up=True,fontsize=20,fmt={1.0:"1$\sigma$",4.0:"2$\sigma$"})
-ax.plot([bestFitXY[0]],[bestFitXY[1]],"kx")
-ax.set_xlabel("$\mu(ggH)$")
-ax.set_ylabel("$\mu(qqH)$")
-ax.set_xlim(-15,15)
-ax.set_ylim(-15,15)
-drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$","$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$")
-saveAs(fig,"2d_contour")
-
-fig.clear()
-minZ = -5.
-minmaxX = 15
-minmaxY = 15
-ax = fig.add_subplot(111, projection='3d')
-ax.plot(profileYy,minmaxY*scipy.ones(len(profileYy)),profileY,color='b')
-ax.plot(-minmaxX*scipy.ones(len(profileXx)),profileXx,profileX,color='b')
-ax.scatter(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
-#ax.plot_wireframe(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
-#ax.plot_surface(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
-ax.contour(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4], zdir='z', offset=minZ, colors=['g','y'])
-ax.plot([bestFitXY[0]],[bestFitXY[1]],minZ,color='k',marker=".")
-ax.set_xlim(-minmaxX,minmaxX)
-ax.set_ylim(-minmaxY,minmaxY)
-ax.set_zlim(minZ,10)
-ax.set_xlabel("$\mu(ggH)$")
-ax.set_ylabel("$\mu(qqH)$")
-ax.set_zlabel("$-2\ln\Delta\mathcal{L}$")
-drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",annotation1r="$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$")
-saveAs(fig,"2d_3d")
-
-print twoDData.shape
+  
+  twoDFile = root.TFile(twoDFN)
+  twoDTree = twoDFile.Get("limit")
+  
+  arrayLen = int(scipy.sqrt(twoDTree.GetEntries()-2))
+  print("Array Side Length: {0:.1f}".format(arrayLen))
+  twoDData = scipy.zeros((arrayLen,arrayLen,3))
+  
+  bestFitXY = [0.,0.]
+  twoDTree.GetEntry(0)
+  bestFitXY[0] = float(twoDTree.r_ggH)
+  bestFitXY[1] = float(twoDTree.r_qqH)
+  for iX in range(0,arrayLen):
+    for iY in range(0,arrayLen):
+      iEntry = iX + arrayLen*iY + 1
+      twoDTree.GetEntry(iEntry)
+    
+      m2Nll = float(2*twoDTree.deltaNLL)
+      twoDData[iX,iY,0] = float(twoDTree.r_ggH)+1e-6
+      twoDData[iX,iY,1] = float(twoDTree.r_qqH)+1e-6
+      if m2Nll > 10.:
+        m2Nll = 0.
+      twoDData[iX,iY,2] = m2Nll
+  
+  #twoDData = twoDData[30:twoDData.shape[0]-30,30:twoDData.shape[1]-30,:]
+  #print twoDData.shape
+  #print "x:"
+  #print twoDData[:,:,0]
+  #print "y:"
+  #print twoDData[:,:,1]
+  #print "Z:"
+  #print twoDData[:,:,2]
+  
+  #X,Y,Z = convertData(twoDData)
+  
+  twoDData = scipy.ma.masked_equal(twoDData,0.)
+  #for i in range(0,twoDData.shape[0],10):
+  #  print twoDData[i,:]
+  #for i in range(0,twoDData.shape[0],100):
+  #  print twoDData[i,:]
+  
+  profileXraw = scipy.amin(twoDData[:,:,2],axis=1)
+  profileYraw = scipy.amin(twoDData[:,:,2],axis=0)
+  profileXx = []
+  profileX = []
+  profileY = []
+  profileYy = []
+  for x,lnn in zip(twoDData[:,0,1],profileXraw):
+    if lnn:
+      profileX.append(lnn)
+      profileXx.append(x)
+  for y,lnn in zip(twoDData[0,:,0],profileYraw):
+    if lnn:
+      profileY.append(lnn)
+      profileYy.append(y)
+  
+  fig.clear()
+  ax = fig.add_subplot(111)
+  ax.contourf(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
+  ax.set_xlabel("$\mu(ggH)$")
+  ax.set_ylabel("$\mu(qqH)$")
+  ax.set_xlim(minX,maxX)
+  ax.set_ylim(minY,maxY)
+  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation2=annotation2)
+  saveAs(fig,savePrefix+"_2d_contourColor")
+  
+  fig.clear()
+  ax = fig.add_subplot(111)
+  ct = ax.contour(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
+  ax.clabel(ct,inline=1,rightside_up=True,fontsize=20,fmt={1.0:"1$\sigma$",4.0:"2$\sigma$"})
+  ax.plot([bestFitXY[0]],[bestFitXY[1]],"kx")
+  ax.set_xlabel("$\mu(ggH)$")
+  ax.set_ylabel("$\mu(qqH)$")
+  ax.set_xlim(minX,maxX)
+  ax.set_ylim(minY,maxY)
+  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation2=annotation2)
+  saveAs(fig,savePrefix+"_2d_contour")
+  
+  fig.clear()
+  minZ = -5.
+  ax = fig.add_subplot(111, projection='3d')
+  ax.plot(profileYy,maxY*scipy.ones(len(profileYy)),profileY,color='b')
+  ax.plot(minX*scipy.ones(len(profileXx)),profileXx,profileX,color='b')
+  ax.scatter(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
+  #ax.plot_wireframe(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
+  #ax.plot_surface(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
+  ax.contour(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4], zdir='z', offset=minZ, colors=['g','y'])
+  ax.plot([bestFitXY[0]],[bestFitXY[1]],minZ,color='k',marker=".")
+  ax.set_xlim(minX,maxX)
+  ax.set_ylim(minY,maxY)
+  ax.set_zlim(minZ,10)
+  ax.set_xlabel("$\mu(ggH)$")
+  ax.set_ylabel("$\mu(qqH)$")
+  ax.set_zlabel("$-2\ln\Delta\mathcal{L}$")
+  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation1r=annotation2)
+  saveAs(fig,savePrefix+"_2d_3d")
+  
+  print twoDData.shape
