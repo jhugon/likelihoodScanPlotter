@@ -23,7 +23,7 @@ annotation1List = [
 ]
 
 annotation2List = [
-"$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",
+"$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.8$ fb$^{-1}$",
 "Uncertainty Scenario 1",
 "Uncertainty Scenario 1",
 "Uncertainty Scenario 2",
@@ -32,10 +32,10 @@ annotation2List = [
 
 oneDFileList = [
 "MultiDimFitGrid1000Fastneg20to20.root",
-None,
-None,
-None,
-None,
+"conservative/MultiDimFitGridR1000Fast_300.root",
+"conservative/MultiDimFitGridR1000Fast_3000.root",
+"optimistic/MultiDimFitGridR1000Fast_300.root",
+"optimistic/MultiDimFitGridR1000Fast_3000.root",
 ]
 
 twoDFileList = [
@@ -46,7 +46,15 @@ twoDFileList = [
 "optimistic/MultiDimFitGrid1000Fastneg20to20GGvQQ_3000.root",
 ]
 
-profileFileList = [
+profile1DFileList = [
+"MultiDimFitSingles.root",
+"conservative/MultiDimFitSinglesR_300.root",
+"conservative/MultiDimFitSinglesR_3000.root",
+"optimistic/MultiDimFitSinglesR_300.root",
+"optimistic/MultiDimFitSinglesR_3000.root",
+]
+
+profile2DFileList = [
 "MultiDimFitSinglesGGvQQ.root",
 "conservative/MultiDimFitSinglesGGvQQ_300.root",
 "conservative/MultiDimFitSinglesGGvQQ_3000.root",
@@ -57,34 +65,39 @@ profileFileList = [
 def drawAnnotations(fig,title,annotation1=None,annotation2=None,annotation3=None,
                     annotation1r=None,annotation2r=None,annotation3r=None,
                     annotation1c=None,annotation2c=None,annotation3c=None,
+                    annotationSize="medium", titleSize='large'
                     ):
-  fig.text(0.13,0.9,"CMS Preliminary",va='bottom',ha='left',size='large')
-  fig.text(0.89,0.9,title,va='bottom',ha='right',size='large')
+  fig.text(0.13,0.905,"CMS Preliminary",va='bottom',ha='left',size=titleSize)
+  fig.text(0.89,0.905,title,va='bottom',ha='right',size=titleSize)
   if annotation1:
-    fig.text(0.14,0.88,annotation1,va='top',ha='left')
+    fig.text(0.14,0.88,annotation1,va='top',ha='left',size=annotationSize)
   if annotation2:
-    fig.text(0.14,0.84,annotation2,va='top',ha='left')
+    fig.text(0.14,0.83,annotation2,va='top',ha='left',size=annotationSize)
   if annotation3:
-    fig.text(0.14,0.79,annotation3,va='top',ha='left')
+    fig.text(0.14,0.78,annotation3,va='top',ha='left',size=annotationSize)
   if annotation1r:
-    fig.text(0.875,0.88,annotation1r,va='top',ha='right')
+    fig.text(0.875,0.88,annotation1r,va='top',ha='right',size=annotationSize)
   if annotation2r:
-    fig.text(0.875,0.84,annotation2r,va='top',ha='right')
+    fig.text(0.875,0.83,annotation2r,va='top',ha='right',size=annotationSize)
   if annotation3r:
-    fig.text(0.875,0.79,annotation3r,va='top',ha='right')
+    fig.text(0.875,0.78,annotation3r,va='top',ha='right',size=annotationSize)
   if annotation1c:
-    fig.text(0.5,0.88,annotation1c,va='top',ha='center')
+    fig.text(0.5,0.88,annotation1c,va='top',ha='center',size=annotationSize)
   if annotation2c:
-    fig.text(0.5,0.84,annotation2c,va='top',ha='center')
+    fig.text(0.5,0.83,annotation2c,va='top',ha='center',size=annotationSize)
   if annotation3c:
-    fig.text(0.5,0.79,annotation3c,va='top',ha='center')
+    fig.text(0.5,0.78,annotation3c,va='top',ha='center',size=annotationSize)
+
 def saveAs(fig,name):
   fig.savefig(name+".png",format="png")
   fig.savefig(name+".pdf",format="pdf")
   fig.savefig(name+".eps",format="eps")
   fig.savefig(name+".svg",format="svg")
 
-for savePrefix,oneDFN,twoDFN,profileFN,annotation1,annotation2 in zip(savePrefixes,oneDFileList,twoDFileList,profileFileList,annotation1List,annotation2List):
+for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2 in zip(savePrefixes,oneDFileList,twoDFileList,profile1DFileList,profile2DFileList,annotation1List,annotation2List):
+
+  print("#################################################\nRunning for savePrefix: {0}...".format(savePrefix))
+  annotation3="$m_H=125$ GeV/c$^2$"
 
   minX = -15
   minY = -15
@@ -103,8 +116,43 @@ for savePrefix,oneDFN,twoDFN,profileFN,annotation1,annotation2 in zip(savePrefix
 
   fig = mpl.figure()
 
-  profileFile = root.TFile(profileFN)
-  profileTree = profileFile.Get("limit")
+
+  if profile1DFN:
+    profileFile = root.TFile(profile1DFN)
+    profileTree = profileFile.Get("limit")
+    profileR = []
+    for iEntry in range(0,3):
+      profileTree.GetEntry(iEntry)
+      r = float(profileTree.r)
+      profileR.append(r)
+    profileR.sort()
+    print profileR
+    print("Profiled mu values:")
+    print("mu: {0:.2f} +{1:.2f} -{2:.2f}".format(profileR[1],profileR[2]-profileR[1],profileR[1]-profileR[0]))
+    print("Relative Uncertainty: {0:.2f}".format((profileR[2]-profileR[1])/profileR[1]))
+  if profile2DFN:
+    profileFile = root.TFile(profile2DFN)
+    profileTree = profileFile.Get("limit")
+    profileGG = []
+    profileQQ = []
+    for iEntry in range(0,6):
+      profileTree.GetEntry(iEntry)
+      ggH = float(profileTree.r_ggH)
+      qqH = float(profileTree.r_qqH)
+      if iEntry <3:
+        profileGG.append(ggH)
+      else:
+        profileQQ.append(qqH)
+      #print("ggH: {0:10.2f} qqH: {1:10.2f}".format(ggH,qqH))
+    profileGG.sort()
+    profileQQ.sort()
+    #print profileGG
+    #print profileQQ
+    print("Profiled mu values:")
+    print("GG: {0:.2f} +{1:.2f} -{2:.2f}".format(profileGG[1],profileGG[2]-profileGG[1],profileGG[1]-profileGG[0]))
+    print("QQ: {0:.2f} +{1:.2f} -{2:.2f}".format(profileQQ[1],profileQQ[2]-profileQQ[1],profileQQ[1]-profileQQ[0]))
+    print("Relative Uncertainty: GG: {0:.2f} QQ: {1:.2f}".format((profileGG[2]-profileGG[1])/profileGG[1],
+          (profileQQ[2]-profileQQ[1])/profileQQ[1]))
 
   if oneDFN:
     oneDFile = root.TFile(oneDFN)
@@ -123,7 +171,7 @@ for savePrefix,oneDFN,twoDFN,profileFN,annotation1,annotation2 in zip(savePrefix
     ax.plot(oneDData[:,0],oneDData[:,1],'b-')
     ax.set_xlabel("$\mu$")
     ax.set_ylabel("$-2\ln\Delta\mathcal{L}$")
-    drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1c=annotation1,annotation2c=annotation2)
+    drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1c=annotation1,annotation2c=annotation2,annotation3c=annotation3)
     saveAs(fig,savePrefix+"_1d")
   
   
@@ -131,7 +179,6 @@ for savePrefix,oneDFN,twoDFN,profileFN,annotation1,annotation2 in zip(savePrefix
   twoDTree = twoDFile.Get("limit")
   
   arrayLen = int(scipy.sqrt(twoDTree.GetEntries()-2))
-  print("Array Side Length: {0:.1f}".format(arrayLen))
   twoDData = scipy.zeros((arrayLen,arrayLen,3))
   
   bestFitXY = [0.,0.]
@@ -189,19 +236,20 @@ for savePrefix,oneDFN,twoDFN,profileFN,annotation1,annotation2 in zip(savePrefix
   ax.set_ylabel("$\mu(qqH)$")
   ax.set_xlim(minX,maxX)
   ax.set_ylim(minY,maxY)
-  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation2=annotation2)
+  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation2=annotation2,annotation3=annotation3)
   saveAs(fig,savePrefix+"_2d_contourColor")
   
   fig.clear()
   ax = fig.add_subplot(111)
   ct = ax.contour(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
+  print(ct)
   ax.clabel(ct,inline=1,rightside_up=True,fontsize=20,fmt={1.0:"1$\sigma$",4.0:"2$\sigma$"})
   ax.plot([bestFitXY[0]],[bestFitXY[1]],"kx")
   ax.set_xlabel("$\mu(ggH)$")
   ax.set_ylabel("$\mu(qqH)$")
   ax.set_xlim(minX,maxX)
   ax.set_ylim(minY,maxY)
-  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation2=annotation2)
+  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation2=annotation2,annotation3=annotation3)
   saveAs(fig,savePrefix+"_2d_contour")
   
   fig.clear()
@@ -220,7 +268,9 @@ for savePrefix,oneDFN,twoDFN,profileFN,annotation1,annotation2 in zip(savePrefix
   ax.set_xlabel("$\mu(ggH)$")
   ax.set_ylabel("$\mu(qqH)$")
   ax.set_zlabel("$-2\ln\Delta\mathcal{L}$")
-  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation1r=annotation2)
+  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation1r=annotation2,annotation2=annotation3,annotationSize='small')
   saveAs(fig,savePrefix+"_2d_3d")
   
   print twoDData.shape
+
+print "Done."
