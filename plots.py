@@ -6,6 +6,36 @@ from mpl_toolkits.mplot3d import Axes3D
 import scipy
 from matplotlib import cm
 
+def drawAnnotations(fig,title,annotation1=None,annotation2=None,annotation3=None,
+                    annotation1r=None,annotation2r=None,annotation3r=None,
+                    annotation1c=None,annotation2c=None,annotation3c=None,
+                    ):
+  fig.text(0.13,0.9,"CMS Preliminary",va='bottom',ha='left',size='large')
+  fig.text(0.89,0.9,title,va='bottom',ha='right',size='large')
+  if annotation1:
+    fig.text(0.14,0.88,annotation1,va='top',ha='left')
+  if annotation2:
+    fig.text(0.14,0.84,annotation2,va='top',ha='left')
+  if annotation3:
+    fig.text(0.14,0.79,annotation3,va='top',ha='left')
+  if annotation1r:
+    fig.text(0.875,0.88,annotation1r,va='top',ha='right')
+  if annotation2r:
+    fig.text(0.875,0.84,annotation2r,va='top',ha='right')
+  if annotation3r:
+    fig.text(0.875,0.79,annotation3r,va='top',ha='right')
+  if annotation1c:
+    fig.text(0.5,0.88,annotation1c,va='top',ha='center')
+  if annotation2c:
+    fig.text(0.5,0.84,annotation2c,va='top',ha='center')
+  if annotation3c:
+    fig.text(0.5,0.79,annotation3c,va='top',ha='center')
+def saveAs(fig,name):
+  fig.savefig(name+".png",format="png")
+  fig.savefig(name+".pdf",format="pdf")
+  fig.savefig(name+".eps",format="eps")
+  fig.savefig(name+".svg",format="svg")
+
 oneDFile = root.TFile("MultiDimFitGrid1000Fastneg20to20.root")
 twoDFile = root.TFile("MultiDimFitGrid1000Fastneg20to20GGvQQ.root")
 profileFile = root.TFile("MultiDimFitSinglesGGvQQ.root")
@@ -80,14 +110,16 @@ ax = fig.add_subplot(111)
 ax.plot(oneDData[:,0],oneDData[:,1],'b-')
 ax.set_xlabel("$\mu$")
 ax.set_ylabel("$-2\ln\Delta\mathcal{L}$")
-fig.savefig("1d.png")
+drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1c="$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",annotation2c="$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$")
+saveAs(fig,"1d")
 
 fig.clear()
 ax = fig.add_subplot(111)
-ax.pcolormesh(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
+ax.contourf(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
 ax.set_xlabel("$\mu(ggH)$")
 ax.set_ylabel("$\mu(qqH)$")
-fig.savefig("2d_pcolormesh.png")
+drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$","$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$")
+saveAs(fig,"2d_contourColor")
 
 fig.clear()
 ax = fig.add_subplot(111)
@@ -98,7 +130,8 @@ ax.set_xlabel("$\mu(ggH)$")
 ax.set_ylabel("$\mu(qqH)$")
 ax.set_xlim(-15,15)
 ax.set_ylim(-15,15)
-fig.savefig("2d_contour.png")
+drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$","$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$")
+saveAs(fig,"2d_contour")
 
 fig.clear()
 minZ = -5.
@@ -118,6 +151,7 @@ ax.set_zlim(minZ,10)
 ax.set_xlabel("$\mu(ggH)$")
 ax.set_ylabel("$\mu(qqH)$")
 ax.set_zlabel("$-2\ln\Delta\mathcal{L}$")
-fig.savefig("2d_3d.png")
+drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",annotation1r="$\sqrt{s}=8$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$")
+saveAs(fig,"2d_3d")
 
 print twoDData.shape
