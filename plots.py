@@ -4,6 +4,7 @@ import ROOT as root
 from matplotlib import pyplot as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import scipy
+from scipy.interpolate import interp1d,splrep, UnivariateSpline, InterpolatedUnivariateSpline
 from matplotlib import cm
 
 savePrefixes = [
@@ -62,6 +63,14 @@ profile2DFileList = [
 "optimistic/MultiDimFitSinglesGGvQQ_3000.root",
 ]
 
+labelList = [
+"Current Analysis",
+"S1, 300 fb$^{-1}$",
+"S1, 3000 fb$^{-1}$",
+"S2, 300 fb$^{-1}$",
+"S2, 3000 fb$^{-1}$",
+]
+
 def drawAnnotations(fig,title,annotation1=None,annotation2=None,annotation3=None,
                     annotation1r=None,annotation2r=None,annotation3r=None,
                     annotation1c=None,annotation2c=None,annotation3c=None,
@@ -94,7 +103,13 @@ def saveAs(fig,name):
   fig.savefig(name+".eps",format="eps")
   fig.savefig(name+".svg",format="svg")
 
-for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2 in zip(savePrefixes,oneDFileList,twoDFileList,profile1DFileList,profile2DFileList,annotation1List,annotation2List):
+oneDLikelihoods = []
+oneDLikelihoodLabels = []
+twoDLikelihoods = []
+twoDLikelihoodLabels = []
+fig = mpl.figure()
+
+for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,label in zip(savePrefixes,oneDFileList,twoDFileList,profile1DFileList,profile2DFileList,annotation1List,annotation2List,labelList):
 
   print("#################################################\nRunning for savePrefix: {0}...".format(savePrefix))
   annotation3="$m_H=125$ GeV/c$^2$"
@@ -106,16 +121,13 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2 in 
   if "300" in savePrefix:
     minX = -1
     minY = -1
-    maxX = 3
-    maxY = 3
+    maxX = 3.5
+    maxY = 3.5
   if "3000" in savePrefix:
     minX = 0
     minY = 0
     maxX = 2
     maxY = 2
-
-  fig = mpl.figure()
-
 
   if profile1DFN:
     profileFile = root.TFile(profile1DFN)
@@ -164,16 +176,33 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2 in 
         continue
       oneDData[iEntry,0] = float(oneDTree.r)
       oneDData[iEntry,1] = 2*float(oneDTree.deltaNLL)
+    oneDDataUnmasked = scipy.copy(oneDData)
     oneDData = scipy.ma.masked_equal(oneDData,0.)
+
+    minimumIndex = scipy.argmin(oneDData[:,1])
+    #lowInterp = UnivariateSpline(oneDDataUnmasked[:minimumIndex,1],oneDDataUnmasked[:minimumIndex,0])
+    #highInterp = UnivariateSpline(oneDDataUnmasked[minimumIndex:,1],oneDDataUnmasked[minimumIndex:,0])
+    #lowInterp = InterpolatedUnivariateSpline(oneDDataUnmasked[:minimumIndex,1],oneDDataUnmasked[:minimumIndex,0])
+    #highInterp = InterpolatedUnivariateSpline(oneDDataUnmasked[minimumIndex:,1],oneDDataUnmasked[minimumIndex:,0])
 
     fig.clear()
     ax = fig.add_subplot(111)
     ax.plot(oneDData[:,0],oneDData[:,1],'b-')
+    #ax.plot(lowInterp(oneDData[:minimumIndex,1]),oneDData[:minimumIndex,1],'r.')
+    #ax.plot(highInterp(oneDData[minimumIndex:,1]),oneDData[minimumIndex:,1],'g.')
+    #for nsig in [1.,4.]:
+    #  print lowInterp(nsig), highInterp(nsig)
+    #  ax.axhline(nsig,linestyle='--')
+    #  ax.axvline(lowInterp(nsig),linestyle='--')
+    #  ax.axvline(highInterp(nsig),linestyle='--')
+
     ax.set_xlabel("$\mu$")
     ax.set_ylabel("$-2\ln\Delta\mathcal{L}$")
     drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1c=annotation1,annotation2c=annotation2,annotation3c=annotation3)
     saveAs(fig,savePrefix+"_1d")
-  
+    if "300" in savePrefix:
+      oneDLikelihoods.append(oneDData)
+      oneDLikelihoodLabels.append(label)
   
   twoDFile = root.TFile(twoDFN)
   twoDTree = twoDFile.Get("limit")
@@ -213,6 +242,10 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2 in 
   #  print twoDData[i,:]
   #for i in range(0,twoDData.shape[0],100):
   #  print twoDData[i,:]
+  if "300" in savePrefix:
+    twoDLikelihoods.append(twoDData)
+    twoDLikelihoodLabels.append(label)
+    
   
   profileXraw = scipy.amin(twoDData[:,:,2],axis=1)
   profileYraw = scipy.amin(twoDData[:,:,2],axis=0)
@@ -242,7 +275,6 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2 in 
   fig.clear()
   ax = fig.add_subplot(111)
   ct = ax.contour(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
-  print(ct)
   ax.clabel(ct,inline=1,rightside_up=True,fontsize=20,fmt={1.0:"1$\sigma$",4.0:"2$\sigma$"})
   ax.plot([bestFitXY[0]],[bestFitXY[1]],"kx")
   ax.set_xlabel("$\mu(ggH)$")
@@ -255,8 +287,8 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2 in 
   fig.clear()
   minZ = -5.
   ax = fig.add_subplot(111, projection='3d')
-  ax.plot(profileYy,maxY*scipy.ones(len(profileYy)),profileY,color='b')
-  ax.plot(minX*scipy.ones(len(profileXx)),profileXx,profileX,color='b')
+  #ax.plot(profileYy,maxY*scipy.ones(len(profileYy)),profileY,color='b')
+  #ax.plot(minX*scipy.ones(len(profileXx)),profileXx,profileX,color='b')
   ax.scatter(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
   #ax.plot_wireframe(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
   #ax.plot_surface(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2])
@@ -272,5 +304,42 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2 in 
   saveAs(fig,savePrefix+"_2d_3d")
   
   print twoDData.shape
+
+if len(oneDLikelihoods)>1:
+  fig.clear()
+  ax = fig.add_subplot(111)
+  for l,label in zip(oneDLikelihoods,oneDLikelihoodLabels):
+    ax.plot(l[:,0],l[:,1],label=label)
+  ax.set_xlabel("$\mu$")
+  ax.set_ylabel("$-2\ln\Delta\mathcal{L}$")
+  drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=14$ TeV Projection")
+  leg = ax.legend(loc='best', fontsize="x-small")
+  leg.get_frame().set_alpha(0.5)
+  saveAs(fig,"1d_AllTogether")
+  oneDLikelihoods.append(oneDData)
+
+if len(twoDLikelihoods)>1:
+  fig.clear()
+  ax = fig.add_subplot(111)
+  twoDColors = ['k','b','r','m','g','y']
+  minX = 0
+  minY = 0
+  maxX = 2.5
+  maxY = 2.5
+  for l,label,c in zip(twoDLikelihoods,twoDLikelihoodLabels,twoDColors[:len(twoDLikelihoodLabels)]):
+    ct = ax.contour(l[:,:,0],l[:,:,1],l[:,:,2],[1.],colors=[c])
+    #ax.clabel(ct,inline=1,rightside_up=True,fontsize=15,fmt={1.0:label})
+  proxyArtistList = []
+  for label,c in zip(twoDLikelihoodLabels,twoDColors[:len(twoDLikelihoodLabels)]):
+    proxyArtistList.append(mpl.Line2D([0,0],[1,1],label=label,color=c))
+  ax.set_xlim(minX,maxX)
+  ax.set_ylim(minY,maxY)
+  ax.set_xlabel("$\mu(ggH)$")
+  ax.set_ylabel("$\mu(qqH)$")
+  drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=14$ TeV Projection","1$\sigma$ Contours")
+  leg = ax.legend(proxyArtistList,twoDLikelihoodLabels,loc='best', fontsize="x-small")
+  leg.get_frame().set_alpha(0.5)
+  saveAs(fig,"2d_AllTogether")
+  oneDLikelihoods.append(oneDData)
 
 print "Done."

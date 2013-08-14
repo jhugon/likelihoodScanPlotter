@@ -1,0 +1,6 @@
+texput.log
+*.root
+*.eps
+*.pdf
+*.png
+*.svg
