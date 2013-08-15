@@ -184,6 +184,14 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,lab
     #highInterp = UnivariateSpline(oneDDataUnmasked[minimumIndex:,1],oneDDataUnmasked[minimumIndex:,0])
     #lowInterp = InterpolatedUnivariateSpline(oneDDataUnmasked[:minimumIndex,1],oneDDataUnmasked[:minimumIndex,0])
     #highInterp = InterpolatedUnivariateSpline(oneDDataUnmasked[minimumIndex:,1],oneDDataUnmasked[minimumIndex:,0])
+    low1SigI = scipy.argmin(scipy.fabs(oneDData[:minimumIndex,1.]-1.0))
+    high1SigI = scipy.argmin(scipy.fabs(oneDData[minimumIndex:,1.]-1.0))
+    low1Sig = oneDData[low1SigI,0]
+    high1Sig = oneDData[minimumIndex:,0][high1SigI]
+    low2SigI = scipy.argmin(scipy.fabs(oneDData[:minimumIndex,1.]-4.0))
+    high2SigI = scipy.argmin(scipy.fabs(oneDData[minimumIndex:,1.]-4.0))
+    low2Sig = oneDData[low2SigI,0]
+    high2Sig = oneDData[minimumIndex:,0][high2SigI]
 
     fig.clear()
     ax = fig.add_subplot(111)
@@ -195,9 +203,15 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,lab
     #  ax.axhline(nsig,linestyle='--')
     #  ax.axvline(lowInterp(nsig),linestyle='--')
     #  ax.axvline(highInterp(nsig),linestyle='--')
+    ax.axhline(1.,linestyle=':',color='r')
+    ax.plot([low1Sig,low1Sig],[0.,1.],linestyle=':',color='r')
+    ax.plot([high1Sig,high1Sig],[0.,1.],linestyle=':',color='r')
+    ax.axhline(4.,linestyle=':',color='r')
+    ax.plot([low2Sig,low2Sig],[0.,4.],linestyle=':',color='r')
+    ax.plot([high2Sig,high2Sig],[0.,4.],linestyle=':',color='r')
 
     ax.set_xlabel("$\mu$")
-    ax.set_ylabel("$-2\ln\Delta\mathcal{L}$")
+    ax.set_ylabel("$-2\Delta\ln\mathcal{L}$")
     drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1c=annotation1,annotation2c=annotation2,annotation3c=annotation3)
     saveAs(fig,savePrefix+"_1d")
     if "300" in savePrefix:
@@ -299,7 +313,7 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,lab
   ax.set_zlim(minZ,10)
   ax.set_xlabel("$\mu(ggH)$")
   ax.set_ylabel("$\mu(qqH)$")
-  ax.set_zlabel("$-2\ln\Delta\mathcal{L}$")
+  ax.set_zlabel("$-2\Delta\ln\mathcal{L}$")
   drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation1r=annotation2,annotation2=annotation3,annotationSize='small')
   saveAs(fig,savePrefix+"_2d_3d")
   
@@ -311,7 +325,7 @@ if len(oneDLikelihoods)>1:
   for l,label in zip(oneDLikelihoods,oneDLikelihoodLabels):
     ax.plot(l[:,0],l[:,1],label=label)
   ax.set_xlabel("$\mu$")
-  ax.set_ylabel("$-2\ln\Delta\mathcal{L}$")
+  ax.set_ylabel("$-2\Delta\ln\mathcal{L}$")
   drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=14$ TeV Projection")
   leg = ax.legend(loc='best', fontsize="x-small")
   leg.get_frame().set_alpha(0.5)
