@@ -9,66 +9,92 @@ from matplotlib import cm
 
 savePrefixes = [
 "current",
-"snowmassUnc1_300",
-"snowmassUnc1_3000",
-"snowmassUnc2_300",
-"snowmassUnc2_3000"
+"real125p0",
+"real125p7",
+#"snowmassUnc1_300",
+#"snowmassUnc1_3000",
+#"snowmassUnc2_300",
+#"snowmassUnc2_3000"
 ]
 
 annotation1List = [
 "$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",
-"$\sqrt{s}=14$ TeV, $\mathcal{L} = 300$ fb$^{-1}$",
-"$\sqrt{s}=14$ TeV, $\mathcal{L} = 3000$ fb$^{-1}$",
-"$\sqrt{s}=14$ TeV, $\mathcal{L} = 300$ fb$^{-1}$",
-"$\sqrt{s}=14$ TeV, $\mathcal{L} = 3000$ fb$^{-1}$",
+"$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",
+"$\sqrt{s}=7$ TeV, $\mathcal{L} = 5.0$ fb$^{-1}$",
+#"$\sqrt{s}=14$ TeV, $\mathcal{L} = 300$ fb$^{-1}$",
+#"$\sqrt{s}=14$ TeV, $\mathcal{L} = 3000$ fb$^{-1}$",
+#"$\sqrt{s}=14$ TeV, $\mathcal{L} = 300$ fb$^{-1}$",
+#"$\sqrt{s}=14$ TeV, $\mathcal{L} = 3000$ fb$^{-1}$",
 ]
 
 annotation2List = [
 "$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.8$ fb$^{-1}$",
-"Uncertainty Scenario 1",
-"Uncertainty Scenario 1",
-"Uncertainty Scenario 2",
-"Uncertainty Scenario 2",
+"$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.8$ fb$^{-1}$",
+"$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.8$ fb$^{-1}$",
+#"Uncertainty Scenario 1",
+#"Uncertainty Scenario 1",
+#"Uncertainty Scenario 2",
+#"Uncertainty Scenario 2",
 ]
 
 oneDFileList = [
 "MultiDimFitGrid1000Fastneg20to20.root",
-"conservative/MultiDimFitGridR1000Fast_300.root",
-"conservative/MultiDimFitGridR1000Fast_3000.root",
-"optimistic/MultiDimFitGridR1000Fast_300.root",
-"optimistic/MultiDimFitGridR1000Fast_3000.root",
+"params125.7/CombSplitAll_7P8TeV_125.0.txt.lhGridR.root",
+"params125.7/CombSplitAll_7P8TeV_125.7.txt.lhGridR.root",
+#"conservative/MultiDimFitGridR1000Fast_300.root",
+#"conservative/MultiDimFitGridR1000Fast_3000.root",
+#"optimistic/MultiDimFitGridR1000Fast_300.root",
+#"optimistic/MultiDimFitGridR1000Fast_3000.root",
 ]
 
 twoDFileList = [
 "MultiDimFitGrid1000Fastneg20to20GGvQQ.root",
-"conservative/MultiDimFitGrid1000Fastneg20to20GGvQQ_300.root",
-"conservative/MultiDimFitGrid1000Fastneg20to20GGvQQ_3000.root",
-"optimistic/MultiDimFitGrid1000Fastneg20to20GGvQQ_300.root",
-"optimistic/MultiDimFitGrid1000Fastneg20to20GGvQQ_3000.root",
+"params125.7/CombSplitAll_7P8TeV_125.0.txt.lhGridQQvGG.root",
+"params125.7/CombSplitAll_7P8TeV_125.7.txt.lhGridQQvGG.root",
+#"conservative/MultiDimFitGrid1000Fastneg20to20GGvQQ_300.root",
+#"conservative/MultiDimFitGrid1000Fastneg20to20GGvQQ_3000.root",
+#"optimistic/MultiDimFitGrid1000Fastneg20to20GGvQQ_300.root",
+#"optimistic/MultiDimFitGrid1000Fastneg20to20GGvQQ_3000.root",
 ]
 
 profile1DFileList = [
 "MultiDimFitSingles.root",
-"conservative/MultiDimFitSinglesR_300.root",
-"conservative/MultiDimFitSinglesR_3000.root",
-"optimistic/MultiDimFitSinglesR_300.root",
-"optimistic/MultiDimFitSinglesR_3000.root",
+"params125.7/CombSplitAll_7P8TeV_125.0.txt.profileR.root",
+"params125.7/CombSplitAll_7P8TeV_125.7.txt.profileR.root",
+#"conservative/MultiDimFitSinglesR_300.root",
+#"conservative/MultiDimFitSinglesR_3000.root",
+#"optimistic/MultiDimFitSinglesR_300.root",
+#"optimistic/MultiDimFitSinglesR_3000.root",
 ]
 
 profile2DFileList = [
 "MultiDimFitSinglesGGvQQ.root",
-"conservative/MultiDimFitSinglesGGvQQ_300.root",
-"conservative/MultiDimFitSinglesGGvQQ_3000.root",
-"optimistic/MultiDimFitSinglesGGvQQ_300.root",
-"optimistic/MultiDimFitSinglesGGvQQ_3000.root",
+"params125.7/CombSplitAll_7P8TeV_125.0.txt.profileQQvGG.root",
+"params125.7/CombSplitAll_7P8TeV_125.7.txt.profileQQvGG.root",
+#"conservative/MultiDimFitSinglesGGvQQ_300.root",
+#"conservative/MultiDimFitSinglesGGvQQ_3000.root",
+#"optimistic/MultiDimFitSinglesGGvQQ_300.root",
+#"optimistic/MultiDimFitSinglesGGvQQ_3000.root",
 ]
 
 labelList = [
 "Current Analysis",
-"S1, 300 fb$^{-1}$",
-"S1, 3000 fb$^{-1}$",
-"S2, 300 fb$^{-1}$",
-"S2, 3000 fb$^{-1}$",
+"Current Analysis 125.",
+"Current Analysis 125.7",
+#"S1, 300 fb$^{-1}$",
+#"S1, 3000 fb$^{-1}$",
+#"S2, 300 fb$^{-1}$",
+#"S2, 3000 fb$^{-1}$",
+]
+
+annotation3List = [
+  "$m_H=125$ GeV/c$^2$",
+  "$m_H=125$ GeV/c$^2$",
+  "$m_H=125.7$ GeV/c$^2$",
+  #"$m_H=125$ GeV/c$^2$",
+  #"$m_H=125$ GeV/c$^2$",
+  #"$m_H=125$ GeV/c$^2$",
+  #"$m_H=125$ GeV/c$^2$",
 ]
 
 def drawAnnotations(fig,title,annotation1=None,annotation2=None,annotation3=None,
@@ -109,10 +135,9 @@ twoDLikelihoods = []
 twoDLikelihoodLabels = []
 fig = mpl.figure()
 
-for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,label in zip(savePrefixes,oneDFileList,twoDFileList,profile1DFileList,profile2DFileList,annotation1List,annotation2List,labelList):
+for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,annotation3,label in zip(savePrefixes,oneDFileList,twoDFileList,profile1DFileList,profile2DFileList,annotation1List,annotation2List,annotation3List,labelList):
 
   print("#################################################\nRunning for savePrefix: {0}...".format(savePrefix))
-  annotation3="$m_H=125$ GeV/c$^2$"
 
   minX = -15
   minY = -15
@@ -277,23 +302,23 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,lab
       profileY.append(lnn)
       profileYy.append(y)
   
-  fig.clear()
-  ax = fig.add_subplot(111)
-  ax.contourf(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
-  ax.set_xlabel("$\mu(ggH)$")
-  ax.set_ylabel("$\mu(qqH)$")
-  ax.set_xlim(minX,maxX)
-  ax.set_ylim(minY,maxY)
-  drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation2=annotation2,annotation3=annotation3)
-  saveAs(fig,savePrefix+"_2d_contourColor")
+  #fig.clear()
+  #ax = fig.add_subplot(111)
+  #ax.contourf(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
+  #ax.set_xlabel("$\mu_{GF}$")
+  #ax.set_ylabel("$\mu_{VBF}$")
+  #ax.set_xlim(minX,maxX)
+  #ax.set_ylim(minY,maxY)
+  #drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation2=annotation2,annotation3=annotation3)
+  #saveAs(fig,savePrefix+"_2d_contourColor")
   
   fig.clear()
   ax = fig.add_subplot(111)
   ct = ax.contour(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],[1.,4.],colors=['g','y'])
   ax.clabel(ct,inline=1,rightside_up=True,fontsize=20,fmt={1.0:"1$\sigma$",4.0:"2$\sigma$"})
   ax.plot([bestFitXY[0]],[bestFitXY[1]],"kx")
-  ax.set_xlabel("$\mu(ggH)$")
-  ax.set_ylabel("$\mu(qqH)$")
+  ax.set_xlabel("$\mu_{GF}$")
+  ax.set_ylabel("$\mu_{VBF}$")
   ax.set_xlim(minX,maxX)
   ax.set_ylim(minY,maxY)
   drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation2=annotation2,annotation3=annotation3)
@@ -312,8 +337,8 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,lab
   ax.set_xlim(minX,maxX)
   ax.set_ylim(minY,maxY)
   ax.set_zlim(minZ,10)
-  ax.set_xlabel("$\mu(ggH)$")
-  ax.set_ylabel("$\mu(qqH)$")
+  ax.set_xlabel("$\mu_{GF}$")
+  ax.set_ylabel("$\mu_{VBF}$")
   ax.set_zlabel("$-2\Delta\ln\mathcal{L}$")
   drawAnnotations(fig,r"$H\rightarrow\mu\mu$",annotation1=annotation1,annotation1r=annotation2,annotation2=annotation3,annotationSize='small')
   saveAs(fig,savePrefix+"_2d_3d")
@@ -349,8 +374,8 @@ if len(twoDLikelihoods)>1:
     proxyArtistList.append(mpl.Line2D([0,0],[1,1],label=label,color=c))
   ax.set_xlim(minX,maxX)
   ax.set_ylim(minY,maxY)
-  ax.set_xlabel("$\mu(ggH)$")
-  ax.set_ylabel("$\mu(qqH)$")
+  ax.set_xlabel("$\mu_{GF}$")
+  ax.set_ylabel("$\mu_{VBF}$")
   drawAnnotations(fig,r"$H\rightarrow\mu\mu$","$\sqrt{s}=14$ TeV Projection","1$\sigma$ Contours")
   leg = ax.legend(proxyArtistList,twoDLikelihoodLabels,loc='best', fontsize="x-small")
   leg.get_frame().set_alpha(0.5)
