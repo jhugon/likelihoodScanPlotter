@@ -209,6 +209,7 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,lab
     ax.axhline(4.,linestyle=':',color='r')
     ax.plot([low2Sig,low2Sig],[0.,4.],linestyle=':',color='r')
     ax.plot([high2Sig,high2Sig],[0.,4.],linestyle=':',color='r')
+    print("rBF: {0:10.2f} 1sigma contours found on scan: {1:10.2f} {2:10.2f}".format(oneDData[minimumIndex,0],low1Sig,high1Sig))
 
     ax.set_xlabel("$\mu$")
     ax.set_ylabel("$-2\Delta\ln\mathcal{L}$")
