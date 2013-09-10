@@ -12,8 +12,8 @@ echo "cmsenv success!"
 date
 
 inputCard=hmm.txt
-datacard=ws_$inputCard
-datacardGGvQQ=wsGGvQQ_$inputCard
+datacard=ws_$1.root
+datacardGGvQQ=wsGGvQQ_$1.root
 echo $1
 echo $inputCard
 echo $datacard
@@ -21,8 +21,8 @@ echo $datacardGGvQQ
 
 cp $1 $inputCard
 
-text2workspace.py $inputCard -m 125 -D data_obs -o $datacard
-text2workspace.py $inputCard -m 125 -D data_obs -P HiggsAnalysis.CombinedLimit.PhysicsModel:floatingXSHiggs --PO modes=ggH,qqH --PO ggHRange=-20:20 --PO qqHRange=-30:30  -o $datacardGGvQQ
+text2workspace.py $inputCard -m 125 -D data_obs -o $datacard >& logDatacard
+text2workspace.py $inputCard -m 125 -D data_obs -P HiggsAnalysis.CombinedLimit.PhysicsModel:floatingXSHiggs --PO modes=ggH,qqH --PO ggHRange=-20:20 --PO qqHRange=-30:30  -o $datacardGGvQQ >& logDatacardGGvQQ
 
 combine -M MultiDimFit --algo=singles --cl=0.68 $datacardGGvQQ >& logSinglesQQvGG
 mv higgs*.root GGvQQSingles_$1.root
