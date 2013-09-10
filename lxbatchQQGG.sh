@@ -14,7 +14,7 @@ date
 inputCard=hmm_$1
 datacard=ws_$inputCard
 datacardGGvQQ=wsGGvQQ_$inputCard
-echo $i
+echo $1
 echo $inputCard
 echo $datacard
 echo $datacardGGvQQ
@@ -25,13 +25,13 @@ text2workspace.py $inputCard -m 125 -D data_obs -o $datacard
 text2workspace.py $inputCard -m 125 -D data_obs -P HiggsAnalysis.CombinedLimit.PhysicsModel:floatingXSHiggs --PO modes=ggH,qqH --PO ggHRange=-20:20 --PO qqHRange=-30:30  -o $datacardGGvQQ
 
 combine -M MultiDimFit --algo=singles --cl=0.68 $datacardGGvQQ >& logSinglesQQvGG
-mv higgs*.root GGvQQSingles_$i.root
+mv higgs*.root GGvQQSingles_$1.root
 
 combine -M MultiDimFit --algo=grid --points=1000 --fastScan --rMin=-20 --rMax=20 $datacard >& logGrid
-mv higgs*.root MuGrid_$i.root
+mv higgs*.root MuGrid_$1.root
 
 combine -M MultiDimFit --algo=grid --points=5000 --fastScan  $datacardGGvQQ >& logGridQQvGG
-mv higgs*.root GGvQQGrid_$i.root
+mv higgs*.root GGvQQGrid_$1.root
 
 echo "done"
 date
