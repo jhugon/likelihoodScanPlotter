@@ -29,9 +29,9 @@ annotation1List = [
 ]
 
 annotation2List = [
-"$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.8$ fb$^{-1}$",
-"$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.8$ fb$^{-1}$",
-"$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.8$ fb$^{-1}$",
+"$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.7$ fb$^{-1}$",
+"$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.7$ fb$^{-1}$",
+"$\sqrt{s}=8$ TeV, $\mathcal{L} = 19.7$ fb$^{-1}$",
 "Uncertainty Scenario 1",
 "Uncertainty Scenario 1",
 "Uncertainty Scenario 2",
@@ -40,8 +40,8 @@ annotation2List = [
 
 oneDFileList = [
 "MultiDimFitGrid1000Fastneg20to20.root",
-"params125.7/CombSplitAll_7P8TeV_125.0.txt.lhGridR.root",
-"params125.7/CombSplitAll_7P8TeV_125.7.txt.lhGridR.root",
+"new/MuGrid_CombSplitAll_7P8TeV_125.0.txt.root",
+"new/MuGrid_CombSplitAll_7P8TeV_125.7.txt.root",
 "conservative/MultiDimFitGridR1000Fast_300.root",
 "conservative/MultiDimFitGridR1000Fast_3000.root",
 "optimistic/MultiDimFitGridR1000Fast_300.root",
@@ -50,8 +50,8 @@ oneDFileList = [
 
 twoDFileList = [
 "MultiDimFitGrid1000Fastneg20to20GGvQQ.root",
-"params125.7/CombSplitAll_7P8TeV_125.0.txt.lhGridQQvGG.root",
-"params125.7/CombSplitAll_7P8TeV_125.7.txt.lhGridQQvGG.root",
+"new/GGvQQGrid_CombSplitAll_7P8TeV_125.0.txt.root",
+"new/GGvQQGrid_CombSplitAll_7P8TeV_125.7.txt.root",
 "conservative/MultiDimFitGrid1000Fastneg20to20GGvQQ_300.root",
 "conservative/MultiDimFitGrid1000Fastneg20to20GGvQQ_3000.root",
 "optimistic/MultiDimFitGrid1000Fastneg20to20GGvQQ_300.root",
@@ -70,8 +70,8 @@ profile1DFileList = [
 
 profile2DFileList = [
 "MultiDimFitSinglesGGvQQ.root",
-"params125.7/CombSplitAll_7P8TeV_125.0.txt.profileQQvGG.root",
-"params125.7/CombSplitAll_7P8TeV_125.7.txt.profileQQvGG.root",
+"new/GGvQQSingles_CombSplitAll_7P8TeV_125.0.txt.root",
+"new/GGvQQSingles_CombSplitAll_7P8TeV_125.7.txt.root",
 "conservative/MultiDimFitSinglesGGvQQ_300.root",
 "conservative/MultiDimFitSinglesGGvQQ_3000.root",
 "optimistic/MultiDimFitSinglesGGvQQ_300.root",
@@ -310,7 +310,9 @@ for savePrefix,oneDFN,twoDFN,profile1DFN,profile2DFN,annotation1,annotation2,ann
   ax = fig.add_subplot(111)
   ct = ax.contour(twoDData[:,:,0],twoDData[:,:,1],twoDData[:,:,2],contoursFor2D,colors=['g','y'])
   ax.clabel(ct,inline=1,rightside_up=True,fontsize=20,fmt=labelsForContours2D)
-  ax.plot([bestFitXY[0]],[bestFitXY[1]],"kx")
+  ax.plot([bestFitXY[0]],[bestFitXY[1]],"kx",markersize=10,markeredgewidth=1.5)
+  ax.plot(1,1,"ro",mec='r',markersize=7)
+  ax.annotate("SM",xy=(0.7,1.3),xycoords='data',verticalalignment="bottom",horizontalalignment='right',fontsize='small',color='r')
   ax.set_xlabel("$\mu_{GF}$")
   ax.set_ylabel("$\mu_{VBF}$")
   ax.set_xlim(minX,maxX)
