@@ -11,7 +11,7 @@ eval `scramv1 runtime -sh`
 echo "cmsenv success!"
 date
 
-inputCard=hmm_$1
+inputCard=hmm.txt
 datacard=ws_$inputCard
 datacardGGvQQ=wsGGvQQ_$inputCard
 echo $1
