@@ -26,17 +26,18 @@ def effectiveOneOvergamgamHAmplitude():
   """
   return -0.85 + 0.16 * (MH/100.)**2
 
-def effectiveLoopggHMu(l,c=1./(16*pi**2)):
+def effectiveLoopggHMu(l,c=-1./(16*pi**2)):
   """
   Only considering CP conserving operator
   http://arxiv.org/abs/hep-ph/0601212
   """
   result = 8.*pi**2*VEV**2*c
-  result /= l**2 * effectiveOneOverggHAmplitude()
+  result /= l**2 
+  result *= effectiveOneOverggHAmplitude()
   result = 1.-result
   return abs(result)**2
 
-def effectiveLoopggHL(mu,c=1./(16*pi**2)):
+def effectiveLoopggHL(mu,c=-1./(16*pi**2)):
   """
   Only considering CP conserving operator
   http://arxiv.org/abs/hep-ph/0601212
@@ -45,9 +46,34 @@ def effectiveLoopggHL(mu,c=1./(16*pi**2)):
   result = 1.-result
   result = 1./result
   result *= 8.*pi**2*VEV**2*c
-  result /= effectiveOneOverggHAmplitude()
+  result *= effectiveOneOverggHAmplitude()
   result = sqrt(result)
   return result
+
+def effectiveLoopgamgamHMu(l,c=1./(16*pi**2)):
+  """
+  Only considering CP conserving operator
+  http://arxiv.org/abs/hep-ph/0601212
+  """
+  result = 4.*pi**2*VEV**2*c
+  result /= l**2 
+  result *= effectiveOneOvergamgamHAmplitude()
+  result = 1.-result
+  return abs(result)**2
+
+def effectiveLoopgamgamHL(mu,c=1./(16*pi**2)):
+  """
+  Only considering CP conserving operator
+  http://arxiv.org/abs/hep-ph/0601212
+  """
+  result = sqrt(mu)
+  result = 1.-result
+  result = 1./result
+  result *= 4.*pi**2*VEV**2*c
+  result *= effectiveOneOvergamgamHAmplitude()
+  result = sqrt(result)
+  return result
+
 
 def getK(l,m):
     return 1. + VEV**3 / (sqrt(2) * m * l**2)
@@ -138,8 +164,18 @@ print "For mu of 7.4: "
 print "lambda = ",getL(7.4,MMU)
 print "and back again = ",getMu(getL(7.4,MMU),MMU)
 print
-print "For mu of 7.0: "
-print "lambda = ",getL(7.0,MMU)
+print "for gluons and mu of 7.4 (c=-1):"
+print "lambda = ",effectiveLoopggHL(7.4,-1)
+print "and back again = ",effectiveLoopggHMu(effectiveLoopggHL(7.4,-1),-1)
+print
+print "for photons and mu of 7.4 (c=1):"
+print "lambda = ",effectiveLoopgamgamHL(7.4,1)
+print "and back again = ",effectiveLoopgamgamHMu(effectiveLoopgamgamHL(7.4,1),1)
+
+print "\n###############################################3\n"
+
+print "For muons, and mu of 7.4: "
+print "lambda = ",getL(7.4,MMU)
 
 print "\n###############################################3\n"
 
@@ -155,10 +191,10 @@ print "For k_g of 1.5: (c=-1/16pi^2)"
 print "  ",effectiveLoopggHL(1.5**2,c=-1./(16*pi**2))
 print "For k_g of 1.5: (c=-1)"
 print "  ",effectiveLoopggHL(1.5**2,c=-1.)
-#print "For k_gamma of 1.43: (c=-1/16pi^2)"
-#print "  ",effectiveLoopgamgamHL(1.43**2,c=-1./(16*pi**2))
-#print "For k_gamma of 1.43: (c=-1)"
-#print "  ",effectiveLoopgamgamHL(1.43**2,c=-1.)
+print "For k_gamma of 1.43: (c=1/16pi^2)"
+print "  ",effectiveLoopgamgamHL(1.43**2,c=1./(16*pi**2))
+print "For k_gamma of 1.43: (c=1)"
+print "  ",effectiveLoopgamgamHL(1.43**2,c=1.)
 
 print "\n###############################################3\n"
 
