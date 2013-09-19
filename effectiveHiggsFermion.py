@@ -141,21 +141,35 @@ print
 print "For mu of 7.0: "
 print "lambda = ",getL(7.0,MMU)
 
-print "From HIG-13-005:"
-print "For k_b of 2.2 (My approximate CMS prelim result 95\% CL UL): "
-print "  ",getL(2.2**2,MBOT)
-print "For k_tau of 1.75 (My approximate CMS prelim result 95\% CL UL): "
-print "  ",getL(1.75**2,MTAU)
-print "For k_t of 3.0 (My approximate CMS prelim result 95\% CL UL): "
+print "\n###############################################3\n"
+
+print "From HIG-13-005: (Effective Gluon and Photon couplings)"
+print
+print "For k_b of 2.1: "
+print "  ",getL(2.1**2,MBOT)
+print "For k_tau of 1.65: "
+print "  ",getL(1.65**2,MTAU)
+print "For k_t of 3.0: "
 print "  ",getL(3.**2,MTOP)
+print "For k_g of 1.5: (c=-1/16pi^2)"
+print "  ",effectiveLoopggHL(1.5**2,c=-1./(16*pi**2))
+print "For k_g of 1.5: (c=-1)"
+print "  ",effectiveLoopggHL(1.5**2,c=-1.)
+#print "For k_gamma of 1.43: (c=-1/16pi^2)"
+#print "  ",effectiveLoopgamgamHL(1.43**2,c=-1./(16*pi**2))
+#print "For k_gamma of 1.43: (c=-1)"
+#print "  ",effectiveLoopgamgamHL(1.43**2,c=-1.)
 
-print "Effective ggH:"
-print "For mu of 7.0: "
-print "For k_g of 1.5 (My approximate CMS prelim result 95\% CL UL): "
-print "  Assuming alpha=-1:"
-print "    ",effectiveLoopggHL(1.5**2,-1.)
-print "  Assuming alpha=-1/16pi^2:"
-print "    ",effectiveLoopggHL(1.5**2)
+print "\n###############################################3\n"
 
-print "For k_gamma of 1.4 (My approximate CMS prelim result 95\% CL UL): "
+print "From HIG-13-005: (Assuming SM Loop Structure)"
+print
+print "For k_b of 1.95: "
+print "  ",getL(1.95**2,MBOT)
+print "For k_tau of 1.65: "
+print "  ",getL(1.65**2,MTAU)
+print "For k_t of 1.3: "
+print "  ",getL(1.3**2,MTOP)
+
+print "\n###############################################3\n"
 
