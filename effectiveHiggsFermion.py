@@ -117,7 +117,10 @@ ax1.semilogy(muTest,lambdaResult,'r-')
 ax1.semilogy(muTest,topLambdaResult,'g-')
 ax1.semilogy(muTest,botLambdaResult,'c-')
 ax1.semilogy(muTest,tauLambdaResult,'b-')
+#ax1.semilogy(muTest,[effectiveLoopggHL(m) for m in muTest],'k-')
+#ax1.semilogy(muTest,[effectiveLoopgamgamHL(m) for m in muTest],'y-')
 ax1.semilogy(muTest,[effectiveLoopggHL(m,-1) for m in muTest],'k--')
+ax1.semilogy(muTest,[effectiveLoopgamgamHL(m,1) for m in muTest],'m--')
 
 annoX = 5.
 shiftY = 1.2
@@ -126,7 +129,10 @@ ax1.annotate(r"$H\rightarrow\mu\mu$",xy=(annoX,getL(annoX,MMU)*shiftY),color='r'
 ax1.annotate(r"$H\rightarrow\tau\tau$",xy=(annoX,getL(annoX,MTAU)*shiftY),color='b',ha='left',va='bottom')
 ax1.annotate(r"$H\rightarrow b\bar{b}$",xy=(annoX,getL(annoX,MBOT)*shiftY*0.8),color='c',ha='left',va='top')
 ax1.annotate(r"$H\rightarrow t\bar{t}$",xy=(annoX,getL(annoX,MTOP)*shiftY),color='g',ha='left',va='bottom')
+#ax1.annotate(r"$gg\rightarrow H$, $\alpha=-\frac{1}{16\pi^2}$",xy=(annoX+5.,effectiveLoopggHL(annoX+5.)*shiftY),color='k',ha='left',va='bottom')
+#ax1.annotate(r"$H\rightarrow \gamma\gamma$, $\alpha=\frac{1}{16\pi^2}$",xy=(annoX+5.,effectiveLoopgamgamHL(annoX+5.)*shiftY*0.8),color='y',ha='left',va='top')
 ax1.annotate(r"$gg\rightarrow H$, $\alpha=-1$",xy=(annoX+5.,effectiveLoopggHL(annoX+5.,-1.)*shiftY),color='k',ha='left',va='bottom')
+ax1.annotate(r"$H\rightarrow \gamma\gamma$",xy=(annoX+5.,effectiveLoopgamgamHL(annoX+5.,1.)*shiftY*0.8),color='m',ha='left',va='top')
 
 ##################################################
 # Axis 2 ffH
