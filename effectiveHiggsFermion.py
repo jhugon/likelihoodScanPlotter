@@ -176,6 +176,9 @@ print "\n###############################################3\n"
 
 print "For muons, and mu of 7.4: "
 print "lambda = ",getL(7.4,MMU)
+print
+print "For muons, and k_mu of 3.0: "
+print "lambda = ",getL((3.0)**2,MMU)
 
 print "\n###############################################3\n"
 
@@ -209,3 +212,41 @@ print "  ",getL(1.3**2,MTOP)
 
 print "\n###############################################3\n"
 
+print "From CMS-NOTE-13-002: Projected Limits Scenario 1"
+print "  95% UL computed assuming Gaussian errors"
+print
+print "For k_b of 1.21 (300 fb): "
+print "  ",getL(1.21**2,MBOT)
+print "For k_b of 1.12 (3000 fb): "
+print "  ",getL(1.12**2,MBOT)
+print "For k_tau of 1.13 (300 fb): "
+print "  ",getL(1.13**2,MTAU)
+print "For k_tau of 1.08 (3000 fb): "
+print "  ",getL(1.08**2,MTAU)
+print "For k_t of 1.25 (300 fb): "
+print "  ",getL(1.25**2,MTOP)
+print "For k_t of 1.17 (3000 fb): "
+print "  ",getL(1.17**2,MTOP)
+print "For k_mu of 1.25 (300 fb): "
+print "  ",getL(1.25**2,MMU)
+print "For k_mu of 1.17 (3000 fb): "
+print "  ",getL(1.17**2,MMU)
+print "For k_g of 1.13: (c=-1) (300 fb)"
+print "  ",effectiveLoopggHL(1.13**2,c=-1.)
+print "For k_g of 1.08: (c=-1) (3000 fb)"
+print "  ",effectiveLoopggHL(1.08**2,c=-1.)
+print "For k_gamma of 1.12: (c=1) (300 fb)"
+print "  ",effectiveLoopgamgamHL(1.12**2,c=1.)
+print "For k_gamma of 1.08: (c=1) (3000 fb)"
+print "  ",effectiveLoopgamgamHL(1.08**2,c=1.)
+print
+print "For k_g of 1.13: (c=-1/16pi^2) (300 fb)"
+print "  ",effectiveLoopggHL(1.13**2,c=-1./(16*pi**2))
+print "For k_g of 1.08: (c=-1/16pi^2) (3000 fb)"
+print "  ",effectiveLoopggHL(1.08**2,c=-1./(16*pi**2))
+print "For k_gamma of 1.12: (c=1/16pi^2) (300 fb)"
+print "  ",effectiveLoopgamgamHL(1.12**2,c=1./(16*pi**2))
+print "For k_gamma of 1.08: (c=1/16pi^2) (3000 fb)"
+print "  ",effectiveLoopgamgamHL(1.08**2,c=1./(16*pi**2))
+
+print "\n###############################################3\n"
